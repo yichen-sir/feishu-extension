@@ -1,0 +1,28 @@
+【Claude 开工提示词｜按任务清单逐步实现】
+
+请作为资深前端 + Serverless 工程师，基于 docs/ 下的：
+- PRD.md、TECH_SPEC.md、TASKS_CHECKLIST.md、SERVER_README.md
+
+实现“方案三（Vercel 后端 + URL 自动 upsert）”。
+前端只保存后端 API URL；所有飞书密钥放 Vercel 环境变量。
+接口统一返回：成功 {ok:true, record_id}；失败 {ok:false, error}。
+CORS 允许 *，处理 OPTIONS 预检。默认本地后端 `http://localhost:3000/api/bookmark`。
+
+【工作方式（必须遵守）】
+- 严格按照 docs/TASKS_CHECKLIST.md **逐项完成**。
+- **每完成任务清单中的一项**，请单独回复一个小节，标题写“完成第 N 项”，并包含：
+  1) 我怎么在本地验证（清晰步骤）。
+  2) 我需要执行的命令（逐条列出，放代码块）。
+  3) 如果需要在 Chrome 做操作，写出点击路径（如 `chrome://extensions` → 刷新扩展）。
+  4) 如果需要我提供变量或凭证（如 App ID/Secret），**提前提示**我准备什么。
+- 在我确认“验证通过”之前，不要开始下一项。
+
+【第 1 项完成后的固定提醒】
+当你完成第 1 项（初始化仓库 + /api/health）后，请提醒我执行以下命令验证：
+
+完成第 1 项后提醒我执行：
+```
+vercel dev
+curl http://localhost:3000/api/health
+```
+返回 {"ok":true} 即继续下一步。
