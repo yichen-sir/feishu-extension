@@ -77,17 +77,61 @@
 
 ---
 
-## 📋 任务二：MV3 清单与空白 UI 🔄 进行中
-**开始时间**: 2025-09-10  
+## 📋 任务二：MV3 清单与空白 UI ✅ 已完成
+**完成时间**: 2025-09-10  
 **目标**: 创建Chrome扩展的基本框架
 
-### 计划变更
-- 创建 manifest.json (MV3格式)
-- 创建空白的popup.html和popup.js
-- 创建空白的options.html和options.js  
-- 创建空白的background.js (Service Worker)
+### 🔧 具体变更记录
 
-*(此部分待完成后填写)*
+#### 1. 核心文件创建
+- **manifest.json**:
+  - MV3格式清单文件
+  - 权限：activeTab, storage, contextMenus, alarms, notifications
+  - 主机权限：localhost:3000 和 *.vercel.app
+  - Service Worker后台脚本：background.js
+  - Popup界面：popup.html，快捷键：Alt+S
+
+#### 2. 用户界面创建
+- **popup.html & popup.js**:
+  - 弹出窗口界面，包含网站地址、标题、中文说明、备注、标签等字段
+  - 自动获取当前页面标题、URL和favicon
+  - 保存按钮（暂时模拟保存成功）
+  - 状态提示功能
+
+- **options.html & options.js**:
+  - 设置页面，配置后端API地址
+  - 默认API地址：http://localhost:3000/api/bookmark
+  - 连接测试功能，URL格式验证，设置保存到chrome.storage.sync
+
+#### 3. 后台服务创建
+- **background.js (Service Worker)**:
+  - 扩展安装时创建右键菜单"保存到飞书"
+  - 处理快捷键命令（Alt+S）
+  - 右键菜单和快捷键触发保存功能
+  - 失败重试队列机制、通知功能
+  - HTTP 404错误处理正常（后端未启动时的预期行为）
+
+#### 4. 图标资源
+- 创建基础PNG图标文件：16x16, 48x48, 128x128
+
+### 🎯 任务成果总结
+
+**用通俗的话说**：
+Chrome扩展的"外壳"完全建好了：
+
+1. **身份证** - manifest.json告诉Chrome这是什么扩展 ✅
+2. **用户界面** - 点击图标弹出表单，自动填写页面信息 ✅
+3. **设置页面** - 可以配置后端服务器地址 ✅
+4. **右键菜单** - 在任意网页右键出现"保存到飞书" ✅
+5. **后台服务** - Service Worker正常运行，事件处理完整 ✅
+
+### 📝 验证步骤
+1. ✅ chrome://extensions 成功加载扩展
+2. ✅ Popup界面正常，自动填充页面标题和URL
+3. ✅ Options设置页面完整，API地址配置正常
+4. ✅ 右键菜单显示"保存到飞书"选项
+5. ✅ 点击菜单项触发事件，控制台日志显示正常处理流程
+6. ✅ Service Worker运行正常，错误处理机制完整
 
 ---
 
