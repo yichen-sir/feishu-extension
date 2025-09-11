@@ -7,8 +7,20 @@ document.addEventListener('DOMContentLoaded', function() {
   const descriptionInput = document.getElementById('description');
   const notesInput = document.getElementById('notes');
   const tagsInput = document.getElementById('tags');
+  const collectedAtInput = document.getElementById('collected_at');
   const saveBtn = document.getElementById('saveBtn');
   const statusDiv = document.getElementById('status');
+
+  // 设置收藏时间
+  const now = new Date();
+  collectedAtInput.value = now.toLocaleString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
 
   // 获取当前标签页信息
   getCurrentTab().then(tab => {
@@ -20,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
       getFavicon(tab).then(favicon => {
         // 暂时存储favicon，后续使用
         window.currentFavicon = favicon;
+        console.log('Favicon URL:', favicon);
       });
     }
   });
@@ -41,16 +54,41 @@ document.addEventListener('DOMContentLoaded', function() {
   // 获取favicon
   function getFavicon(tab) {
     return new Promise((resolve) => {
-      if (tab.favIconUrl && !tab.favIconUrl.startsWith('chrome://')) {
+      // 优先使用Chrome提供的favIconUrl
+      if (tab.favIconUrl && 
+          !tab.favIconUrl.startsWith('chrome://') && 
+          !tab.favIconUrl.startsWith('chrome-extension://')) {
         resolve(tab.favIconUrl);
-      } else {
-        // 尝试构造favicon URL
-        try {
-          const url = new URL(tab.url);
-          resolve(`${url.origin}/favicon.ico`);
-        } catch {
+        return;
+      }
+      
+      // 尝试构造favicon URL
+      try {
+        const url = new URL(tab.url);
+        // 跳过特殊协议的页面
+        if (url.protocol === 'chrome:' || 
+            url.protocol === 'chrome-extension:' || 
+            url.protocol === 'file:') {
           resolve('');
+          return;
         }
+        
+        // 构造标准favicon路径
+        const faviconUrl = `${url.origin}/favicon.ico`;
+        
+        // 简单验证favicon是否存在（通过检查响应）
+        const img = new Image();
+        img.onload = () => resolve(faviconUrl);
+        img.onerror = () => resolve(''); // 如果加载失败，返回空字符串
+        img.src = faviconUrl;
+        
+        // 设置超时，避免长时间等待
+        setTimeout(() => {
+          resolve(faviconUrl); // 超时后直接返回URL，不管是否加载成功
+        }, 2000);
+        
+      } catch {
+        resolve('');
       }
     });
   }
