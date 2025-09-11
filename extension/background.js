@@ -68,7 +68,7 @@ async function saveCurrentPage(tab) {
     // 显示成功通知
     chrome.notifications.create({
       type: 'basic',
-      iconUrl: 'icons/icon-48.png',
+      iconUrl: chrome.runtime.getURL('icons/icon-128.png'),
       title: '保存成功',
       message: `已保存：${tab.title}`
     });
@@ -79,7 +79,7 @@ async function saveCurrentPage(tab) {
     // 显示错误通知
     chrome.notifications.create({
       type: 'basic',
-      iconUrl: 'icons/icon-48.png',
+      iconUrl: chrome.runtime.getURL('icons/icon-128.png'),
       title: '保存失败',
       message: '请检查网络连接或设置'
     });
