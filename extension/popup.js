@@ -94,27 +94,50 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // 保存到飞书
-  function saveToFeishu() {
+  async function saveToFeishu() {
     const data = {
       title: titleInput.value,
       url: urlInput.value,
       cn_desc: descriptionInput.value,
       notes: notesInput.value,
-      tags: tagsInput.value.split(',').map(tag => tag.trim()).filter(tag => tag),
+      tags: tagsInput.value,
       favicon_url: window.currentFavicon || '',
       collected_at: new Date().toISOString(),
-      source: 'chrome'
+      source: 'chrome-popup'
     };
 
     showStatus('正在保存...', false);
     
-    // 暂时模拟保存成功
-    setTimeout(() => {
-      showStatus('保存成功！', true);
-      setTimeout(() => {
-        window.close();
-      }, 1000);
-    }, 1000);
+    try {
+      // 获取API地址
+      const result = await chrome.storage.sync.get(['apiUrl']);
+      const apiUrl = result.apiUrl || 'http://localhost:3000/api/bookmark';
+      
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        if (result.ok) {
+          showStatus('保存成功！', true);
+          setTimeout(() => {
+            window.close();
+          }, 1000);
+        } else {
+          throw new Error(result.error || 'API返回错误');
+        }
+      } else {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+    } catch (error) {
+      console.error('Save failed:', error);
+      showStatus(`保存失败: ${error.message}`, false);
+    }
   }
 
   // 显示状态消息
