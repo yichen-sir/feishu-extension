@@ -1,37 +1,41 @@
 {
   "manifest_version": 3,
   "name": "飞书 URL 收藏器",
+  "short_name": "飞书收藏",
   "description": "一键把当前网页 + 中文说明/备注/标签 写入飞书多维表格",
   "version": "1.0.0",
-  "permissions": [
-    "activeTab",
-    "storage",
-    "contextMenus",
-    "alarms",
-    "notifications"
-  ],
+
+  "permissions": ["activeTab", "storage", "contextMenus", "alarms", "notifications"],
   "host_permissions": [
     "http://localhost:3000/*",
     "https://*.vercel.app/*"
   ],
-  "background": {
-    "service_worker": "background.js"
-  },
+
+  "background": { "service_worker": "background.js" },
+
   "action": {
     "default_popup": "popup.html",
-    "default_title": "保存到飞书"
+    "default_title": "保存到飞书",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
   },
+
   "options_page": "options.html",
+
   "commands": {
     "save_to_feishu": {
-      "suggested_key": {
-        "default": "Alt+S"
-      },
+      "suggested_key": { "default": "Alt+S" },
       "description": "保存当前页面到飞书"
     }
   },
+
   "icons": {
     "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
     "48": "icons/icon-48.png",
     "128": "icons/icon-128.png"
   }

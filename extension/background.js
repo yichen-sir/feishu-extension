@@ -87,7 +87,7 @@ async function saveCurrentPage(tab) {
 }
 
 // 发送数据到后端
-async function sendToBackend(data) {
+async function sendToBackend(data, isRetry = false) {
   return new Promise((resolve, reject) => {
     chrome.storage.sync.get(['apiUrl'], async function(result) {
       const apiUrl = result.apiUrl || 'http://localhost:3000/api/bookmark';
@@ -114,8 +114,10 @@ async function sendToBackend(data) {
       } catch (error) {
         console.error('Backend request failed:', error);
         
-        // 将失败的请求加入重试队列
-        await addToRetryQueue(data, error.message);
+        // 只有非重试请求才加入重试队列（避免无限递归）
+        if (!isRetry) {
+          await addToRetryQueue(data, error.message);
+        }
         reject(error);
       }
     });
@@ -156,16 +158,27 @@ async function retryFailedRequests() {
     for (const request of failedRequests) {
       // 最多重试5次
       if (request.retryCount >= 5) {
+        console.log('Max retry attempts reached for:', request.data.title);
         continue;
       }
       
       try {
-        await sendToBackend(request.data);
+        await sendToBackend(request.data, true); // 标记为重试请求
         console.log('Retry successful for:', request.data.title);
+        
+        // 显示重试成功通知
+        chrome.notifications.create({
+          type: 'basic',
+          iconUrl: chrome.runtime.getURL('icons/icon-128.png'),
+          title: '重试保存成功',
+          message: `已保存：${request.data.title || request.data.url}`
+        });
+        
       } catch (error) {
         request.retryCount++;
         request.error = error.message;
         remainingRequests.push(request);
+        console.log(`Retry ${request.retryCount}/5 failed for:`, request.data.title);
       }
     }
     
@@ -175,6 +188,7 @@ async function retryFailedRequests() {
     // 如果没有待重试的请求，清除定时器
     if (remainingRequests.length === 0) {
       chrome.alarms.clear('retry-failed-requests');
+      console.log('All retry attempts completed, clearing alarm');
     }
   });
 }
