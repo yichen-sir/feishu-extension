@@ -6,7 +6,8 @@
   "scripts": {
     "start": "vercel dev",
     "build": "vercel build",
-    "deploy": "vercel deploy --prod"
+    "deploy": "vercel deploy --prod",
+    "fetch-fields": "tsx scripts/fetch-field-map.ts"
   },
   "keywords": [
     "chrome-extension",
@@ -16,8 +17,10 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^20.0.0",
+    "@types/node": "^20.19.14",
     "@vercel/node": "^3.0.0",
+    "dotenv": "^17.2.2",
+    "tsx": "^4.20.5",
     "typescript": "^5.0.0",
     "vercel": "^47.1.4"
   },
