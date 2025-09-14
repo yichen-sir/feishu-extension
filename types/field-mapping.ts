@@ -7,6 +7,7 @@ export interface FieldMapping {
   '收藏时间': 'fldFslLJQU';
   'favicon': 'fldDHjlpTi';
   '来源': 'fldMew5G9i';
+  'url key': 'fldIp6j3Ki';
 }
 
 export const FIELD_MAPPING: FieldMapping = {
@@ -16,5 +17,6 @@ export const FIELD_MAPPING: FieldMapping = {
   "标签": "fldrgkbYGE",
   "收藏时间": "fldFslLJQU",
   "favicon": "fldDHjlpTi",
-  "来源": "fldMew5G9i"
+  "来源": "fldMew5G9i",
+  "url key": "fldIp6j3Ki"
 };
